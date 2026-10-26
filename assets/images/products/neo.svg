@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="580" viewBox="0 0 1000 580">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#102b42"/><stop offset="1" stop-color="#091723"/></linearGradient><linearGradient id="product" x2="1" y2="1"><stop stop-color="#5f91ad"/><stop offset="1" stop-color="#203d61"/></linearGradient></defs>
+<rect width="1000" height="580" fill="url(#bg)"/><circle cx="810" cy="90" r="260" fill="#5f91ad" opacity=".09"/>
+<path d="M80 440H920" stroke="#74abc0" stroke-opacity=".20" stroke-width="2"/>
+<path d="M245 355l255-110 250 110-250 110z" fill="#092135" stroke="#6da0c2" stroke-opacity=".4" stroke-width="3"/>
+<path d="M245 235l255-107 250 107v120L500 465 245 355z" fill="url(#product)" stroke="#83c3e7" stroke-opacity=".65" stroke-width="4"/>
+<path d="M245 235l255 110 250-110M500 345v120" fill="none" stroke="#94d2ef" stroke-opacity=".62" stroke-width="4"/>
+<path d="M310 246l165-70M320 287l90 39M580 352l114-49" stroke="#d8f4ff" stroke-opacity=".26" stroke-width="9" stroke-linecap="round"/>
+<circle cx="500" cy="332" r="24" fill="#d6f3ff" opacity=".82"/><text x="500" y="341" font-size="27" font-weight="800" fill="#0b2840" text-anchor="middle">5</text>
+<text x="50" y="78" fill="#daf4ff" font-family="Arial,sans-serif" font-weight="800" font-size="36">Modelo Neo</text>
+<text x="50" y="114" fill="#a6c4d8" font-family="Arial,sans-serif" font-size="17" letter-spacing="3">ILUSTRAÇÃO FICTÍCIA · PORTFÓLIO</text>
+</svg>

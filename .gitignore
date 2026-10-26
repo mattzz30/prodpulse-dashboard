@@ -1,0 +1,21 @@
+# Planilhas
+*.xlsx
+*.xlsm
+*.xls
+*.csv
+
+# Bancos de dados
+*.db
+*.sqlite*
+
+# Informações privadas
+.env
+.env.*
+
+# Pastas e arquivos locais
+uploads/
+backup/
+*.zip
+*.log
+__pycache__/
+.venv/

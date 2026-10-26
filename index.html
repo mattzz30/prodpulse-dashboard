@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProdPulse | Dashboard de Produção — DEMO</title>
+<!-- Estilos da aplicação -->
+<link rel="stylesheet" href="css/styles.css?v=34.0.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; media-src 'none'; object-src 'none'; base-uri 'self'">
+</head>
+<body data-build="V1-PORTFOLIO-DEMO">
+
+<div class="app"><div class="shell">
+<header class="topbar">
+  <div class="logo demo-logo" aria-label="ProdPulse Demo"><span class="demo-mark">P</span><span class="demo-name">PROD<span>PULSE</span><small>DEMONSTRAÇÃO</small></span></div>
+  <div class="title"><h1>Central de Acompanhamento — Produção</h1><p>Projeto de portfólio com dados gerados artificialmente, sem vínculo com empresas reais.</p></div>
+  <div class="header-status"><strong id="headerMonth">—</strong><span id="headerBase">Base carregada</span><span id="liveStatus" class="live-status offline" role="status" aria-live="polite">● DEMO: carregando dados sintéticos</span></div>
+</header>
+<section class="toolbar">
+  <div class="control"><label for="monthFilter">Mês</label><select id="monthFilter"></select></div>
+  <div class="control"><label for="familyFilter">Família</label><select id="familyFilter"><option value="">Todas</option></select></div>
+  <div class="control"><label for="clientFilter">Cliente</label><select id="clientFilter"><option value="">Todos</option></select></div>
+  <div class="control search"><label for="searchFilter">Pesquisar</label><input id="searchFilter" placeholder="código fictício, pedido, lote, cliente ou modelo"></div>
+  <div class="toolbar-actions"><button class="btn primary" id="refreshLiveToolbar" type="button">↻ Recarregar dados fictícios</button></div>
+</section>
+<div id="notice" class="notice" role="status" aria-live="polite"></div>
+<section class="kpis">
+ <div class="kpi plan"><div class="kpi-icon">◎</div><div class="kpi-body"><div class="kpi-label">Planejados da carteira</div><div class="kpi-value" id="kPlan">0</div><div class="kpi-footer"><span class="kpi-note">carros no período</span><div class="kpi-meter"><span id="meterPlan"></span></div></div></div></div>
+ <div class="kpi done"><div class="kpi-icon">✓</div><div class="kpi-body"><div class="kpi-label">Liberados da carteira</div><div class="kpi-value" id="kDone">0</div><div class="kpi-footer"><span class="kpi-note" id="kDoneNote">Qualidade concluída</span><div class="kpi-meter"><span id="meterDone"></span></div></div></div></div>
+ <div class="kpi pending"><div class="kpi-icon">!</div><div class="kpi-body"><div class="kpi-label">Pendentes</div><div class="kpi-value" id="kPending">0</div><div class="kpi-footer"><span class="kpi-note" id="kPendingNote">aguardando liberação</span><div class="kpi-meter"><span id="meterPending"></span></div></div></div></div>
+ <div class="kpi rate"><div class="kpi-icon">%</div><div class="kpi-body"><div class="kpi-label">Conclusão da carteira</div><div class="kpi-value" id="kRate">0%</div><div class="kpi-footer"><span class="kpi-note" id="kRateNote">liberados ÷ planejados</span><div class="kpi-meter"><span id="meterRate"></span></div></div></div></div>
+</section>
+<section class="executive">
+ <div class="exec-icon">!</div>
+ <div class="exec-copy"><strong id="execTitle">Carregando situação da produção…</strong><p id="execText">—</p></div>
+ <div class="exec-tag" id="execTag">—</div>
+</section>
+<section class="daily-panel" id="dailyTargetPanel">
+ <div class="daily-head">
+  <div class="daily-head-copy"><div class="accent"></div><div><h2>Meta do Dia — Fechamento da Carteira</h2><p>Mês de referência do planejamento e conclusões simuladas. Valores ilustrativos.</p></div></div>
+  <div class="daily-controls">
+   <div class="daily-control daily-rule"><span>Regra da fábrica</span><strong>22 dias / mês − feriados</strong></div>
+   <label class="daily-control"><span>Paradas/feriados extras</span><input id="dailyExtraHolidays" type="number" min="0" max="10" step="1" value="0" placeholder="0"></label>
+   <button class="btn small" id="dailyAuto" type="button">Zerar extras</button>
+  </div>
+ </div>
+ <div class="daily-kpis">
+  <div class="daily-kpi"><span>Carteira pendente</span><strong id="dailyPending">0</strong><small>carros para fechar o mês</small></div>
+  <div class="daily-kpi"><span>Dias produtivos restantes</span><strong id="dailyDays">0</strong><small id="dailyDaysNote">base de 22 dias</small></div>
+  <div class="daily-kpi"><span>Feriados descontados</span><strong id="dailyHolidayCount">0</strong><small id="dailyHolidayNote">feriados oficiais do mês</small></div>
+  <div class="daily-kpi featured"><span>Meta média por dia</span><strong id="dailyAvg">0</strong><small>unidades/dia necessários</small></div>
+  <div class="daily-kpi today"><span>Meta sugerida hoje</span><strong id="dailyTodayTarget">0</strong><small id="dailyTodayNote">distribuição da carteira</small></div>
+  <div class="daily-kpi"><span>Liberados hoje</span><strong id="dailyDoneToday">0</strong><small>Qualidade no dia</small></div>
+  <div class="daily-kpi gap"><span>Gap de hoje</span><strong id="dailyGap">0</strong><small id="dailyGapNote">para cumprir a meta diária</small></div>
+ </div>
+ <div class="daily-body">
+  <div class="daily-chart-card">
+   <div class="daily-subhead"><div><strong>Meta diária por implemento</strong><span>Média necessária por dia até o fim do período.</span></div><span class="daily-summary" id="dailySummary">—</span></div>
+   <div class="daily-bars" id="dailyBars"></div>
+  </div>
+  <div class="daily-plan-card">
+   <div class="daily-subhead"><div><strong>Plano sugerido para hoje</strong><span>Distribuição inteira da meta de hoje conforme a carteira restante.</span></div></div>
+   <div class="daily-today-list" id="dailyTodayList"></div>
+   <div class="daily-footnote" id="dailyFootnote">—</div>
+  </div>
+ </div>
+</section>
+<section class="goal-panel" id="goalPanel">
+ <div class="goal-head">
+  <div class="goal-head-copy"><div class="accent"></div><div><h2>Relatório da Meta</h2><p>Acompanha Mês, Família e Cliente. A pesquisa rápida não altera este relatório.</p></div></div>
+  <div class="goal-controls">
+   <div class="goal-field"><label for="goalInput">Meta do mês</label><input id="goalInput" class="goal-input" type="number" min="1" step="1" inputmode="numeric"></div>
+   <span class="goal-mode" id="goalMode">Meta automática</span>
+   <button class="btn small" id="usePlannedGoal" type="button">Usar planejado</button>
+   <button class="btn small" id="downloadGoalReport" type="button">Baixar relatório</button>
+  </div>
+ </div>
+ <div class="goal-grid">
+  <div class="goal-col">
+   <div class="goal-visual-card">
+    <div class="goal-chip" id="goalChip">Acompanhando meta</div>
+    <div class="donut-wrap"><div class="goal-donut" id="goalDonut" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="donut-center"><strong id="goalPct">0%</strong><span>da meta atingida</span></div></div></div>
+    <div class="goal-mini-legend"><span><i></i>Liberados</span><span><i class="track"></i>Meta</span></div>
+   </div>
+   <div class="donut-foot"><strong id="goalFraction">0 / 0 carros</strong><span id="goalRemainingText">Defina uma meta para acompanhar.</span></div>
+  </div>
+  <div class="goal-col">
+   <div class="goal-stats">
+    <div class="goal-stat"><span>Meta</span><strong id="goalValue">0</strong><small>carros no período</small></div>
+    <div class="goal-stat released"><span>Liberados</span><strong id="goalDone">0</strong><small>pela Qualidade</small></div>
+    <div class="goal-stat missing"><span>Faltam</span><strong id="goalMissing">0</strong><small>para atingir a meta</small></div>
+    <div class="goal-stat"><span>Planejados</span><strong id="goalPlanned">0</strong><small>na base selecionada</small></div>
+   </div>
+   <div class="previous-box"><div class="previous-top"><span id="previousMonthLabel">Mês anterior</span><strong id="previousRate">—</strong></div><div class="comparison flat" id="previousComparison">Sem comparação disponível.</div></div>
+  </div>
+  <div class="goal-col">
+   <div class="goal-status future" id="goalStatus">Calculando ritmo…</div>
+   <div class="goal-report-title">Resumo automático</div>
+   <div class="goal-report-text" id="goalReportText">—</div>
+   <div class="pace-box"><div class="pace-title"><span>Ritmo para a meta</span><strong id="pacePercent">—</strong></div><div class="pace-track"><div class="pace-fill" id="paceFill"></div><div class="pace-marker" id="paceMarker"></div></div><div class="pace-copy" id="paceCopy">—</div></div>
+   <div class="goal-note">A meta é editável. Por padrão, o sistema usa a quantidade planejada como meta. Ao digitar outra meta, ela fica aplicada à combinação atual de mês, família e cliente enquanto a página estiver aberta.</div>
+  </div>
+ </div>
+</section>
+<div class="content">
+ <section class="panel">
+   <div class="panel-head"><div class="head-title"><div class="accent"></div><div><h2>Acompanhamento por Modelo</h2><div class="panel-sub">Pendências primeiro. Clique em um tipo para ver exatamente quais carros formam o indicador.</div></div></div><div class="tools"><select id="viewFilter" class="mini-select"><option value="all">Todos os carros</option><option value="pending">Somente pendentes</option><option value="done">Somente liberados</option></select><select id="sortFilter" class="mini-select"><option value="pending">Mais pendentes</option><option value="rate">Menor conclusão</option><option value="planned">Mais planejados</option><option value="az">A–Z</option></select><button class="btn small" id="toggleTypes">Ver todos</button></div></div>
+   <div class="monitor"><div class="monitor-head"><div>Modelo</div><div>Planejado</div><div>Liberado</div><div>Pendente</div><div>Andamento</div></div><div id="typeList"></div></div>
+ </section>
+ <aside class="side">
+  <section class="side-panel"><div class="side-head"><h3>Prioridade de atuação</h3><p>Tipos com maior quantidade pendente no período.</p></div><div class="critical-list" id="criticalList"></div></section>
+  <section class="side-panel"><div class="side-head"><h3>Tipo selecionado</h3><p>Visualização do produto selecionado.</p></div><div class="photo-box"><div class="photo-frame product-media-frame"><video id="typeVideo" muted loop playsinline preload="none" controlslist="nodownload noplaybackrate" disablepictureinpicture></video><img id="typePhoto" alt="Ilustração fictícia do modelo"><div class="media-badge" id="typeMediaBadge">3D</div></div><div class="media-switch"><button class="media-btn active" id="typeShowVideo" type="button">▶ Vídeo</button><button class="media-btn" id="typeShowPhoto" type="button">▣ Foto</button></div><div class="photo-caption"><strong id="photoTitle">Selecione um tipo</strong><span id="photoText">Clique em uma linha para visualizar os carros.</span></div></div></section>
+ </aside>
+</div>
+
+<section class="panel production-index-panel" id="productionIndexPanel">
+ <div class="panel-head">
+  <div class="head-title"><div class="accent"></div><div><h2>Índice de Média Diária de Produção <span id="prodIndexBuild" style="font-size:10px;font-weight:800;letter-spacing:.08em;color:#d71920;vertical-align:middle;margin-left:6px">DEMO</span></h2><div class="panel-sub">Média diária simulada de quatro linhas fictícias, a partir das datas de conclusão geradas artificialmente.</div></div></div>
+  <div class="tools">
+   <select id="prodIndexPeriod" class="mini-select"><option value="12">Últimos 12 meses</option><option value="18">Últimos 18 meses</option><option value="all" selected>Todo histórico</option></select>
+   <select id="prodIndexDaysMode" class="mini-select"><option value="active" selected>Dias produtivos até a última liberação</option></select>
+   <button class="btn small" id="prodIndexFullscreen" type="button">⛶ Tela cheia</button>
+   <span class="prod-index-summary" id="prodIndexSummary">—</span>
+   <span class="prod-index-summary" id="prodIndexAudit" style="font-weight:900;color:#17344d">DEMO: dados simulados</span>
+  </div>
+ </div>
+ <div class="prod-index-kpis">
+  <div class="prod-index-kpi"><span>Média diária atual</span><strong id="prodIndexCurrent">—</strong><small>unidades/dia</small></div>
+  <div class="prod-index-kpi"><span>Dias considerados</span><strong id="prodIndexDays">—</strong><small id="prodIndexDaysLabel">no mês atual</small></div>
+  <div class="prod-index-kpi"><span>Família com maior média</span><strong id="prodIndexLeader">—</strong><small id="prodIndexLeaderValue">—</small></div>
+ </div>
+ <div class="prod-index-scroll"><canvas id="prodIndexCanvas" height="390" aria-label="Gráfico do índice de média diária de produção por família"></canvas></div>
+ <div class="prod-index-legend" id="prodIndexLegend"></div>
+ <div class="prod-index-note" id="prodIndexNote">Índice = quantidade liberada da família no mês ÷ dias produtivos considerados.</div>
+</section>
+
+<section class="panel month-panel">
+ <div class="panel-head"><div class="head-title"><div class="accent"></div><div><h2>Mix de Produtos — Planejado x Liberado</h2><div class="panel-sub">Comparativo fictício entre unidades planejadas e concluídas no mês selecionado.</div></div></div><div class="tools"><input id="mixSearch" class="detail-search mix-search" placeholder="Filtrar produto no mix"><select id="mixMode" class="mini-select"><option value="all">Todos os produtos</option><option value="pending">Somente com pendência</option><option value="done">Somente liberados</option></select><select id="mixOrder" class="mini-select"><option value="planned">Mais planejados</option><option value="pending">Mais pendentes</option><option value="done">Mais liberados</option><option value="az">A–Z</option></select><span class="mix-summary" id="mixSummary">—</span></div></div>
+ <div class="mix-chart"><div class="mix-grid" id="mixGrid"></div><div class="mix-legend"><span><i style="background:var(--red)"></i>Planejado</span><span><i style="background:var(--navy2)"></i>Liberado</span><span>• % = participação no mix planejado</span></div><div class="mix-note">Agora o gráfico exibe todos os produtos do período selecionado. Use o campo de filtro para localizar rapidamente um produto específico.</div></div>
+</section>
+<footer class="footer"><span>Última atualização do painel: <b id="updatedAt">—</b></span><span id="baseSummary">—</span><span id="appBuildLabel" style="opacity:.75">Portfólio • Dados 100% fictícios</span></footer>
+</div></div>
+<div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div><h3 id="detailTitle">Detalhamento</h3><div class="panel-sub" id="detailSubtitle">—</div></div><button class="close" id="closeDetail" aria-label="Fechar">×</button></div><div class="detail-top"><div><div class="detail-photo product-media-frame detail-media-frame"><video id="detailVideo" muted loop playsinline preload="none" controlslist="nodownload noplaybackrate" disablepictureinpicture></video><img id="detailPhoto" alt="Ilustração fictícia do modelo"><div class="media-badge" id="detailMediaBadge">3D</div></div><div class="media-switch detail-media-switch"><button class="media-btn active" id="detailShowVideo" type="button">▶ Vídeo</button><button class="media-btn" id="detailShowPhoto" type="button">▣ Foto</button></div></div><div class="detail-summary"><div class="detail-stat"><span>Planejado</span><b id="dPlan">0</b></div><div class="detail-stat"><span>Liberado</span><b id="dDone">0</b></div><div class="detail-stat"><span>Pendente</span><b id="dPending">0</b></div><div class="detail-stat"><span>Conclusão</span><b id="dRate">0%</b></div><div class="detail-actions"><button class="pill active" data-detail="all">Todos</button><button class="pill" data-detail="pending">Pendentes</button><button class="pill" data-detail="done">Liberados</button><input class="detail-search" id="detailSearch" placeholder="Pesquisar código, pedido, lote ou cliente"><button class="btn small" id="exportBtn">Exportar CSV</button></div></div></div><div class="table-wrap"><table class="detail-table"><thead><tr><th>Foto</th><th>Cliente</th><th>Código</th><th>Pedido</th><th>Lote</th><th>Planejado</th><th>Concluído em</th><th>Status</th></tr></thead><tbody id="detailBody"></tbody></table></div></div></div>
+
+<script src="js/config.js?v=34.0.0"></script>
+<script src="js/media-config.js?v=34.0.0"></script>
+<script src="js/ui-motion.js?v=34.0.0"></script>
+<script src="js/app.js?v=34.0.0"></script>
+<script src="js/live-client.js?v=34.0.0"></script>
+<script src="js/main.js?v=34.0.0"></script>
+<script src="js/version.js?v=34.0.0"></script>
+
+</body></html>
